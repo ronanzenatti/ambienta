@@ -137,7 +137,11 @@ node_modules/
 # Ferramentas de assistente de IA: existem apenas na máquina local
 .claude/
 CLAUDE.md
-design/
+design/*
+!design/design-system/
+design/design-system/*
+# Fonte do tema: scripts/build-theme.js precisa dele para o npm run build
+!design/design-system/tokens.json
 
 # Pacote de setup inicial do projeto
 ambienta-project-setup.zip
