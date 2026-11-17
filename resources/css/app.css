@@ -1,0 +1,339 @@
+/*
+ * Ponto de entrada do CSS do Ambienta.
+ *
+ * A ordem importa: os tokens do Design System (@theme, gerado a partir de
+ * design/design-system/tokens.json) entram ANTES do Tailwind.
+ * Compilado para public/assets/css/app.css por `npm run build`.
+ */
+@import "./generated/fonts.css";
+@import "./generated/theme.css";
+@import "tailwindcss";
+/* Select com busca (Tom Select): CSS base copiado por copy-assets.js em @layer components, sobrescrito abaixo. */
+@import "./generated/tom-select.css";
+
+/* O Tailwind detecta classes nas views PHP e nos helpers/listagens que montam HTML. */
+@source "../../app/Views";
+@source "../../app/Helpers";
+@source "../../app/Tabelas";
+
+@layer base {
+    html {
+        background-color: var(--color-paper);
+        color: var(--color-ink);
+        font-family: var(--font-sans);
+        font-size: var(--text-body);
+        line-height: var(--text-body--line-height);
+        -webkit-text-size-adjust: 100%;
+    }
+
+    /* Hairlines do sistema: border decorativa por padrão (o Tailwind v4 usa currentColor). */
+    *,
+    ::before,
+    ::after {
+        border-color: var(--color-border);
+    }
+
+    /* Foco de teclado sempre visível em todo elemento interativo (WCAG 2.4.7). */
+    :focus-visible {
+        outline: 2px solid var(--color-focus-ring);
+        outline-offset: 2px;
+    }
+
+    /* Elementos Alpine escondidos até a inicialização, sem flash de conteúdo. */
+    [x-cloak] {
+        display: none !important;
+    }
+
+    /* Movimento reduzido respeitado. */
+    @media (prefers-reduced-motion: reduce) {
+        *,
+        ::before,
+        ::after {
+            animation-duration: 0.01ms !important;
+            transition-duration: 0.01ms !important;
+        }
+    }
+}
+
+/*
+ * Select com busca (ui_select + diretiva x-busca, Tom Select). Visual do Design System: mesmo campo de
+ * ui_field (border-strong, radius-sm, shadow-xs, 44px de altura, borda brand no foco); lista em painel
+ * surface com border + shadow-md; opção ativa em brand a 10%, sem depender só da cor (o texto não muda).
+ */
+@layer components {
+    .ts-wrapper {
+        font-size: var(--text-body);
+        line-height: var(--text-body--line-height);
+    }
+
+    .ts-wrapper .ts-control,
+    .ts-wrapper.single .ts-control,
+    .ts-wrapper.single.input-active .ts-control,
+    .full .ts-control {
+        min-height: 2.75rem;
+        align-items: center;
+        border: 1px solid var(--color-border-strong);
+        border-radius: var(--radius-sm);
+        background-color: var(--color-surface);
+        box-shadow: var(--shadow-xs);
+        color: var(--color-ink);
+        padding: var(--spacing-space-2) 2.25rem var(--spacing-space-2) var(--spacing-space-3);
+        cursor: pointer;
+    }
+
+    .ts-wrapper.focus .ts-control {
+        border-color: var(--color-brand);
+        outline: 2px solid var(--color-focus-ring);
+        outline-offset: 2px;
+    }
+
+    .ts-wrapper.single .ts-control::after {
+        content: "";
+        position: absolute;
+        right: var(--spacing-space-3);
+        top: 50%;
+        width: 0.5rem;
+        height: 0.5rem;
+        margin-top: -0.35rem;
+        border: solid var(--color-ink-muted);
+        border-width: 0 2px 2px 0;
+        transform: rotate(45deg);
+    }
+
+    .ts-wrapper.single.dropdown-active .ts-control::after {
+        margin-top: -0.1rem;
+        transform: rotate(-135deg);
+    }
+
+    .ts-wrapper.invalid .ts-control,
+    select[aria-invalid="true"] + .ts-wrapper .ts-control {
+        border-color: var(--color-signal-critical);
+    }
+
+    .ts-wrapper.disabled .ts-control {
+        opacity: 0.5;
+    }
+
+    .ts-dropdown {
+        z-index: 80;
+        margin-top: var(--spacing-space-1);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-sm);
+        background-color: var(--color-surface);
+        box-shadow: var(--shadow-md);
+        color: var(--color-ink);
+        overflow: hidden;
+    }
+
+    .ts-dropdown .ts-dropdown-content {
+        max-height: 18rem;
+    }
+
+    .ts-dropdown .option,
+    .ts-dropdown .no-results,
+    .ts-dropdown .loading,
+    .ts-dropdown .spinner {
+        padding: var(--spacing-space-2) var(--spacing-space-3);
+    }
+
+    .ts-dropdown .option {
+        min-height: 2.75rem;
+        display: flex;
+        align-items: center;
+    }
+
+    .ts-dropdown .active {
+        background-color: color-mix(in srgb, var(--color-brand) 10%, var(--color-surface));
+        color: var(--color-ink);
+    }
+
+    .ts-dropdown .selected {
+        font-weight: 600;
+    }
+
+    .ts-dropdown .no-results,
+    .ts-dropdown .loading {
+        color: var(--color-ink-muted);
+    }
+
+    .ts-dropdown [data-selectable] .highlight {
+        background: none;
+        font-weight: 600;
+        text-decoration: underline;
+    }
+
+    /* Caixa de busca no topo da lista (plugin dropdown_input). */
+    .plugin-dropdown_input .dropdown-input-wrap {
+        padding: var(--spacing-space-2);
+        border-bottom: 1px solid var(--color-border);
+    }
+
+    .plugin-dropdown_input .dropdown-input {
+        min-height: 2.75rem;
+        width: 100%;
+        border: 1px solid var(--color-border-strong);
+        border-radius: var(--radius-sm);
+        background-color: var(--color-surface);
+        box-shadow: var(--shadow-xs);
+        padding: 0 var(--spacing-space-3);
+        color: var(--color-ink);
+    }
+
+    .plugin-dropdown_input .dropdown-input:focus {
+        border-color: var(--color-brand);
+    }
+}
+
+/*
+ * Interruptor (toggle switch) no estilo iOS: substitui toda caixa de marcação. Verde (signal-confirmed) ligado,
+ * cinza (border-strong) desligado, com "I" / "0" dentro da trilha para que o estado nunca dependa só da cor.
+ * Uso: <input type="checkbox" role="switch" class="toggle">. Contraste da trilha sobre surface: 6.9:1 / 3.5:1.
+ */
+@layer components {
+    .toggle {
+        appearance: none;
+        position: relative;
+        flex-shrink: 0;
+        width: 3.25rem;
+        height: 2rem;
+        margin: 0;
+        border-radius: 999px;
+        background-color: var(--color-border-strong);
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+    }
+
+    .toggle:checked {
+        background-color: var(--color-signal-confirmed);
+    }
+
+    /* Bolinha. */
+    .toggle::before {
+        content: "";
+        position: absolute;
+        top: 0.1875rem;
+        left: 0.1875rem;
+        width: 1.625rem;
+        height: 1.625rem;
+        border-radius: 999px;
+        background-color: #fff;
+        box-shadow: var(--shadow-sm);
+        transition: transform 0.2s ease;
+    }
+
+    .toggle:checked::before {
+        transform: translateX(1.25rem);
+    }
+
+    /* Rótulo da trilha: "0" à direita quando desligado, "I" (barra fina, lê-se como 1) à esquerda quando ligado. */
+    .toggle::after {
+        content: "0";
+        position: absolute;
+        top: 50%;
+        right: 0.6rem;
+        transform: translateY(-50%);
+        color: #fff;
+        font-size: 0.8125rem;
+        font-weight: 500;
+        line-height: 1;
+    }
+
+    .toggle:checked::after {
+        content: "I";
+        right: auto;
+        left: 0.6rem;
+    }
+
+    .toggle:focus-visible {
+        outline: 2px solid var(--color-focus-ring);
+        outline-offset: 2px;
+    }
+
+    .toggle:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .toggle,
+        .toggle::before {
+            transition: none;
+        }
+    }
+
+    @media (forced-colors: active) {
+        .toggle {
+            border: 1px solid CanvasText;
+            background-color: Canvas;
+        }
+
+        .toggle:checked {
+            background-color: Highlight;
+        }
+
+        .toggle::before {
+            background-color: CanvasText;
+        }
+
+        .toggle::after {
+            color: CanvasText;
+        }
+    }
+}
+
+/*
+ * Consulta pública: bloco de um agendamento (app/Helpers/consulta_helper.php e a agenda semanal montada em JS).
+ * Aula do semestre: faixa de cor à esquerda; reserva pontual: borda tracejada. Três linhas: período, "curso -
+ * disciplina" e primeiro nome. Na linha do tempo, --i (início, min), --d (duração, min) e --f (faixa) posicionam o
+ * bloco sobre a régua [--r0, --r0 + --rs] (min), que o filtro de turno encolhe sem recarregar a página.
+ */
+@layer components {
+    .consulta-bloco {
+        /* Coluna alinhada ao topo (o botão centraliza o conteúdo na vertical por padrão). */
+        @apply flex flex-col justify-start overflow-hidden rounded-sm px-space-2 py-space-1 text-left text-caption hover:brightness-95;
+    }
+
+    .consulta-bloco > span:not(.sr-only) {
+        @apply block truncate;
+    }
+
+    .consulta-bloco > span:first-child {
+        @apply font-semibold tabular-nums;
+    }
+
+    /*
+     * Agenda do ambiente (modal e resumo por sala): horário e pessoa centralizados, horário sem negrito; a linha do curso e da
+     * disciplina quebra em vez de truncar (o nome da disciplina é o único trecho em negrito). A pessoa continua truncada.
+     */
+    .consulta-bloco-sala > span:first-child {
+        @apply text-center font-normal;
+    }
+
+    .consulta-bloco-sala > span:nth-child(3) {
+        @apply text-center;
+    }
+
+    .consulta-bloco-sala > span:nth-child(2) {
+        overflow: visible;
+        text-overflow: clip;
+        white-space: normal;
+        overflow-wrap: anywhere;
+        margin-block: 2px;
+    }
+
+    .consulta-bloco-aula {
+        @apply border border-l-4 border-border-strong border-l-brand bg-brand/10;
+    }
+
+    .consulta-bloco-pontual {
+        @apply border-2 border-dashed border-border-strong bg-surface;
+    }
+
+    .consulta-pos {
+        position: absolute;
+        left: calc((var(--i) - var(--r0)) / var(--rs) * 100%);
+        width: calc(var(--d) / var(--rs) * 100%);
+        top: calc(var(--f) * 4.5rem + 2px);
+        height: calc(4.5rem - 4px);
+    }
+}

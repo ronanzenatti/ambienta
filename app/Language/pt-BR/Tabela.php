@@ -1,0 +1,31 @@
+<?php
+
+// Listagem padrão (app/Libraries/Tabela): busca, paginação, ordenação e exportação.
+return [
+    'search'          => 'Pesquisar',
+    'searchIn'        => 'Pesquisar em {0}',
+    'perPage'         => 'Registros por página',
+    'empty'           => 'Nenhum registro cadastrado.',
+    'emptySearch'     => 'Nenhum registro encontrado para “{0}”.',
+    'summary'         => 'Mostrando {0} a {1} de {2} registros',
+    'summaryEmpty'    => 'Nenhum registro',
+    'summaryFiltered' => '(pesquisa em {0} registros)',
+    'sortAsc'         => 'ordenar em ordem crescente',
+    'sortDesc'        => 'ordenar em ordem decrescente',
+    'page'            => 'Página',
+    'loadError'       => 'Não foi possível carregar a lista. Tente de novo.',
+    'loading'         => 'Carregando…',
+    'formError'       => 'Não foi possível abrir ou salvar o formulário. Tente de novo.',
+    'export'          => 'Exportar',
+    'exportExcel'     => 'Excel (.xlsx)',
+    'exportPdf'       => 'PDF',
+    'scopePage'       => 'Página atual',
+    'scopeSearch'     => 'Resultado da pesquisa',
+    'scopeAll'        => 'Todos os registros',
+    'pdfTooMany'      => 'O PDF aceita até {0} registros e esta exportação tem {1}. Use o Excel ou refine a pesquisa.',
+    'pdfGenerated'    => 'Gerado em {0} por {1}',
+    'pdfScope'        => 'Abrangência: {0}',
+    'pdfSearch'       => 'Pesquisa: “{0}”',
+    'pdfTotal'        => '{0} registros',
+    'pdfPage'         => 'Página {0} de {1}',
+];

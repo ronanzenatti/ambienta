@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Ambienta">
+  <rect width="64" height="64" rx="14" fill="#1E3A5F"/>
+  <!-- prédio -->
+  <path fill="#FFFFFF" d="M12 54V16a2 2 0 0 1 2-2h30a2 2 0 0 1 2 2v38h4v3H8v-3z"/>
+  <!-- janelas e porta -->
+  <g fill="#1E3A5F">
+    <rect x="17" y="22" width="6" height="5" rx="1"/>
+    <rect x="27" y="22" width="6" height="5" rx="1"/>
+    <rect x="17" y="33" width="6" height="5" rx="1"/>
+    <rect x="27" y="33" width="6" height="5" rx="1"/>
+    <rect x="37" y="33" width="6" height="5" rx="1"/>
+    <rect x="17" y="44" width="6" height="5" rx="1"/>
+    <rect x="37" y="44" width="6" height="5" rx="1"/>
+    <rect x="26.5" y="44" width="7" height="10" rx="1"/>
+  </g>
+  <!-- relógio sobreposto no canto superior direito -->
+  <circle cx="47" cy="19" r="12.5" fill="#1E3A5F"/>
+  <circle cx="47" cy="19" r="9.5" fill="#FFFFFF"/>
+  <path d="M47 13.5V19l3.5 2.5" fill="none" stroke="#1E3A5F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

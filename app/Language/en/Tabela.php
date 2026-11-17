@@ -1,0 +1,31 @@
+<?php
+
+// Standard listing (app/Libraries/Tabela): search, pagination, sorting and export.
+return [
+    'search'          => 'Search',
+    'searchIn'        => 'Search {0}',
+    'perPage'         => 'Rows per page',
+    'empty'           => 'No records yet.',
+    'emptySearch'     => 'No records found for “{0}”.',
+    'summary'         => 'Showing {0} to {1} of {2} records',
+    'summaryEmpty'    => 'No records',
+    'summaryFiltered' => '(searched {0} records)',
+    'sortAsc'         => 'sort ascending',
+    'sortDesc'        => 'sort descending',
+    'page'            => 'Page',
+    'loadError'       => 'The list could not be loaded. Please try again.',
+    'loading'         => 'Loading…',
+    'formError'       => 'The form could not be opened or saved. Please try again.',
+    'export'          => 'Export',
+    'exportExcel'     => 'Excel (.xlsx)',
+    'exportPdf'       => 'PDF',
+    'scopePage'       => 'Current page',
+    'scopeSearch'     => 'Search results',
+    'scopeAll'        => 'All records',
+    'pdfTooMany'      => 'PDF exports are limited to {0} records and this one has {1}. Use Excel or narrow the search.',
+    'pdfGenerated'    => 'Generated on {0} by {1}',
+    'pdfScope'        => 'Scope: {0}',
+    'pdfSearch'       => 'Search: “{0}”',
+    'pdfTotal'        => '{0} records',
+    'pdfPage'         => 'Page {0} of {1}',
+];

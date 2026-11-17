@@ -1,0 +1,30 @@
+<?php
+
+// Building records.
+return [
+    'new'          => 'New building',
+    'edit'         => 'Edit building',
+    'photoAlt'     => 'Photo of building {0}',
+    'fieldMap'   => 'Map',
+    'mapHelp'    => 'Image (PNG, JPEG or WebP, up to 2 MB) or PDF (up to 5 MB).',
+    'viewMapPdf' => 'Open the map (PDF)',
+    'mapAlt'     => 'Map of building {0}',
+    'environments' => 'Rooms',
+    'noEnvironments' => 'No room registered in this building.',
+    'saved'        => 'Building saved.',
+    'deleted'      => 'Building deleted.',
+    'title'        => 'Buildings',
+    'empty'        => 'No buildings available.',
+    'colCampus'    => 'Campus',
+    'filters'      => 'Filters',
+    'fieldCampus'  => 'Campus',
+    'allCampuses'  => 'All campuses',
+    'filter'       => 'Filter',
+    'chooseTitle'  => 'New building: choose the campus',
+    'chooseHelp'   => 'A building is registered inside a campus. Choose which one.',
+    'chooseCampusError' => 'Choose the campus of the new building.',
+    'continue'     => 'Continue',
+    'notFound'     => 'Building not found.',
+    'deleteTitle'  => 'Delete building',
+    'deleteText'   => 'Building {0} will be deleted. A building can only be deleted when it has no rooms or user assignments.',
+];

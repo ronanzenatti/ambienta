@@ -1,0 +1,13 @@
+parameters:
+    level: 5
+    paths:
+        - app
+        - tests
+    excludePaths:
+        - app/Views/*            # templates: $this é o renderer do CI4, não analisável estaticamente
+        - tests/unit/HealthTest.php   # teste de exemplo do starter
+        - app/Config/Events.php       # arquivo do starter
+    bootstrapFiles:
+        - vendor/codeigniter4/framework/system/Test/bootstrap.php
+    dynamicConstantNames:
+        - ENVIRONMENT

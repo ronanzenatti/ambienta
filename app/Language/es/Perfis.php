@@ -1,0 +1,30 @@
+<?php
+
+// Pantalla de perfiles y matriz de permisos.
+return [
+    'title'        => 'Perfiles',
+    'new'          => 'Nuevo perfil',
+    'formNew'      => 'Nuevo perfil',
+    'formEdit'     => 'Modificar perfil',
+    'colName'      => 'Nombre',
+    'colUsers'     => 'Asignaciones',
+    'colType'      => 'Tipo',
+    'typeSuper'    => 'Superperfil',
+    'typeCustom'   => 'Personalizado',
+    'fieldName'    => 'Nombre del perfil',
+    'superNote'    => 'Superperfil: acceso irrestricto a todos los campus. No puede modificarse ni eliminarse.',
+    'moduleAccess' => 'Acceso por módulo',
+    'specific'     => 'Permisos específicos',
+    'specificHelp' => 'Marque para permitir la acción.',
+    'accessNone'   => 'Sin acceso',
+    'accessReader' => 'Lector',
+    'accessEditor' => 'Editor',
+    'saved'        => 'Perfil guardado.',
+    'notFound'     => 'Perfil no encontrado.',
+    'nameInUse'    => 'Ya existe un perfil con este nombre.',
+    'superLocked'  => 'El superperfil no puede modificarse ni eliminarse.',
+    'inUse'        => 'Este perfil aún está asignado en {0} vínculo(s) y no puede eliminarse.',
+    'deleteTitle'  => 'Eliminar perfil',
+    'deleteText'   => 'El perfil {0} será eliminado.',
+    'deleted'      => 'Perfil eliminado.',
+];

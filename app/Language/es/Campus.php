@@ -1,0 +1,47 @@
+<?php
+
+// Registro de campus e identidad visual por campus.
+return [
+    'title'      => 'Campus',
+    'new'        => 'Nuevo campus',
+    'edit'       => 'Modificar campus',
+    'empty'      => 'Ningún campus disponible.',
+    'fieldActive' => 'Campus activo',
+    'fieldLogo'  => 'Logotipo',
+    'fieldMap'   => 'Mapa',
+    'mapHelp'    => 'Imagen (PNG, JPEG o WebP, hasta 2 MB) o PDF (hasta 5 MB).',
+    'viewMapPdf' => 'Abrir el mapa (PDF)',
+    'logoAlt'    => 'Logotipo del campus {0}',
+    'photoAlt'   => 'Foto del campus {0}',
+    'mapAlt'     => 'Mapa del campus {0}',
+
+    'sectionIdentity' => 'Identidad visual',
+    'identityIntro'   => 'El color primario y el color del texto sobre él reemplazan la identidad predeterminada en las páginas de este campus. Deje ambos en blanco para usar la identidad predeterminada del sistema.',
+    'fieldColor'      => 'Color primario',
+    'colorHelp'       => 'Formato #RRGGBB, p. ej.: #1E3A5F.',
+    'colorPicker'     => 'Elegir el color primario',
+    'fieldTextColor'  => 'Color del texto sobre el color primario',
+    'textDefault'     => 'Identidad predeterminada (sin color propio)',
+    'text_claro'      => 'Claro',
+    'text_escuro'     => 'Oscuro',
+    'preview'         => 'Vista previa',
+    'previewSample'   => 'Botón de ejemplo',
+    'contrastLabel'   => 'Contraste',
+    'contrastOk'      => 'Cumple el mínimo de 4,5:1 (WCAG 2.1 AA).',
+    'contrastFail'    => 'Por debajo del mínimo de 4,5:1 (WCAG 2.1 AA): no será posible guardar.',
+    'defaultIdentity' => 'Identidad predeterminada del sistema',
+    'identityColors'  => 'Color primario {0}, texto {1}',
+
+    'colorInvalid'       => 'Indique el color primario en el formato #RRGGBB.',
+    'textColorRequired'  => 'Elija el color del texto (claro u oscuro) para el color primario.',
+    'contrastUseOther'   => 'El texto elegido tiene un contraste de {0}:1 sobre este color, por debajo del mínimo de 4,5:1 (WCAG 2.1 AA). Use el texto {1}, que alcanza {2}:1.',
+    'contrastNone'       => 'Ninguna opción de texto alcanza 4,5:1 sobre este color (claro: {0}:1; oscuro: {1}:1). Elija un color más oscuro o más claro.',
+
+    'buildings'   => 'Edificios',
+    'noBuildings' => 'Ningún edificio disponible en este campus.',
+    'saved'       => 'Campus guardado.',
+    'deleted'     => 'Campus eliminado.',
+    'notFound'    => 'Campus no encontrado.',
+    'deleteTitle' => 'Eliminar campus',
+    'deleteText'  => 'El campus {0} será eliminado. Solo es posible eliminar un campus sin edificios, vínculos de usuario ni otros registros asociados.',
+];

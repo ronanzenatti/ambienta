@@ -1,0 +1,30 @@
+<?php
+
+// Cadastro de prédios.
+return [
+    'title'        => 'Prédios',
+    'empty'        => 'Nenhum prédio disponível.',
+    'colCampus'    => 'Campus',
+    'filters'      => 'Filtros',
+    'fieldCampus'  => 'Campus',
+    'allCampuses'  => 'Todos os campi',
+    'filter'       => 'Filtrar',
+    'chooseTitle'  => 'Novo prédio: escolha o campus',
+    'chooseHelp'   => 'O prédio é cadastrado dentro de um campus. Escolha em qual.',
+    'chooseCampusError' => 'Escolha o campus do novo prédio.',
+    'continue'     => 'Continuar',
+    'new'          => 'Novo prédio',
+    'edit'         => 'Alterar prédio',
+    'photoAlt'     => 'Foto do prédio {0}',
+    'fieldMap'   => 'Mapa',
+    'mapHelp'    => 'Imagem (PNG, JPEG ou WebP, até 2 MB) ou PDF (até 5 MB).',
+    'viewMapPdf' => 'Abrir o mapa (PDF)',
+    'mapAlt'     => 'Mapa do prédio {0}',
+    'environments' => 'Ambientes',
+    'noEnvironments' => 'Nenhum ambiente cadastrado neste prédio.',
+    'saved'        => 'Prédio salvo.',
+    'deleted'      => 'Prédio excluído.',
+    'notFound'     => 'Prédio não encontrado.',
+    'deleteTitle'  => 'Excluir prédio',
+    'deleteText'   => 'O prédio {0} será excluído. Só é possível excluir um prédio sem ambientes nem vínculos de usuário.',
+];

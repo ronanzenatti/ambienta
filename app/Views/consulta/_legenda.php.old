@@ -1,0 +1,15 @@
+<?php
+
+/** Legenda dos blocos: aula do semestre (faixa de cor à esquerda) e reserva pontual (borda tracejada). */
+
+?>
+<ul class="mb-space-4 flex flex-wrap gap-x-space-6 gap-y-space-2 text-data" aria-label="<?= esc(lang('Consulta.legend'), 'attr') ?>">
+    <li class="inline-flex items-center gap-space-2">
+        <span class="inline-block h-4 w-8 rounded-sm border border-l-4 border-border-strong border-l-brand bg-brand/10" aria-hidden="true"></span>
+        <?= esc(lang('Consulta.typeClass')) ?>
+    </li>
+    <li class="inline-flex items-center gap-space-2">
+        <span class="inline-block h-4 w-8 rounded-sm border-2 border-dashed border-border-strong bg-surface" aria-hidden="true"></span>
+        <?= esc(lang('Consulta.typeOneOff')) ?>
+    </li>
+</ul>

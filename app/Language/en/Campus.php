@@ -1,0 +1,47 @@
+<?php
+
+// Campus records and per-campus visual identity.
+return [
+    'title'      => 'Campuses',
+    'new'        => 'New campus',
+    'edit'       => 'Edit campus',
+    'empty'      => 'No campus available.',
+    'fieldActive' => 'Active campus',
+    'fieldLogo'  => 'Logo',
+    'fieldMap'   => 'Map',
+    'mapHelp'    => 'Image (PNG, JPEG or WebP, up to 2 MB) or PDF (up to 5 MB).',
+    'viewMapPdf' => 'Open the map (PDF)',
+    'logoAlt'    => 'Logo of campus {0}',
+    'photoAlt'   => 'Photo of campus {0}',
+    'mapAlt'     => 'Map of campus {0}',
+
+    'sectionIdentity' => 'Visual identity',
+    'identityIntro'   => 'The primary color and the text color on top of it replace the default identity on the pages of this campus. Leave both empty to use the system default identity.',
+    'fieldColor'      => 'Primary color',
+    'colorHelp'       => 'Format #RRGGBB, e.g. #1E3A5F.',
+    'colorPicker'     => 'Pick the primary color',
+    'fieldTextColor'  => 'Text color on the primary color',
+    'textDefault'     => 'Default identity (no own color)',
+    'text_claro'      => 'Light',
+    'text_escuro'     => 'Dark',
+    'preview'         => 'Preview',
+    'previewSample'   => 'Sample button',
+    'contrastLabel'   => 'Contrast',
+    'contrastOk'      => 'Meets the 4.5:1 minimum (WCAG 2.1 AA).',
+    'contrastFail'    => 'Below the 4.5:1 minimum (WCAG 2.1 AA): it cannot be saved.',
+    'defaultIdentity' => 'System default identity',
+    'identityColors'  => 'Primary color {0}, text {1}',
+
+    'colorInvalid'       => 'Enter the primary color in the #RRGGBB format.',
+    'textColorRequired'  => 'Choose the text color (light or dark) for the primary color.',
+    'contrastUseOther'   => 'The chosen text has a {0}:1 contrast on this color, below the 4.5:1 minimum (WCAG 2.1 AA). Use the {1} text, which reaches {2}:1.',
+    'contrastNone'       => 'No text option reaches 4.5:1 on this color (light: {0}:1; dark: {1}:1). Choose a darker or lighter color.',
+
+    'buildings'   => 'Buildings',
+    'noBuildings' => 'No building available on this campus.',
+    'saved'       => 'Campus saved.',
+    'deleted'     => 'Campus deleted.',
+    'notFound'    => 'Campus not found.',
+    'deleteTitle' => 'Delete campus',
+    'deleteText'  => 'Campus {0} will be deleted. A campus can only be deleted when it has no buildings, user assignments or other linked records.',
+];

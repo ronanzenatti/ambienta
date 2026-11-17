@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<ruleset name="Ambienta">
+    <description>PSR-12 para o código PHP do Ambienta.</description>
+
+    <file>app</file>
+    <file>tests</file>
+
+    <exclude-pattern>app/Views/errors/*</exclude-pattern>
+    <!-- Arquivos de configuração gerados pelo starter do CI4 (só alteramos poucas linhas). -->
+    <exclude-pattern>app/Config/*</exclude-pattern>
+    <exclude-pattern>*/.gitkeep</exclude-pattern>
+    <exclude-pattern>*/_support/*</exclude-pattern>
+
+    <arg name="colors"/>
+    <arg name="extensions" value="php"/>
+    <arg value="sp"/>
+
+    <rule ref="PSR12"/>
+
+    <!-- Testes do CI4 ficam no namespace global, como no starter. -->
+    <rule ref="PSR1.Classes.ClassDeclaration.MissingNamespace">
+        <exclude-pattern>tests/*</exclude-pattern>
+    </rule>
+    <rule ref="Generic.Files.LineLength">
+        <exclude-pattern>app/Views/*</exclude-pattern>
+        <exclude-pattern>app/Language/*</exclude-pattern>
+        <!-- Testes: uma asserção ou um array de dados por linha é mais legível do que quebrado em 120 colunas. -->
+        <exclude-pattern>tests/*</exclude-pattern>
+        <!-- SQL do schema copiado verbatim (já testado), não reformatado para 120 colunas. -->
+        <exclude-pattern>app/Database/Migrations/*</exclude-pattern>
+    </rule>
+</ruleset>

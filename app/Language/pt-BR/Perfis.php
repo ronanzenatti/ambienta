@@ -1,0 +1,30 @@
+<?php
+
+// Tela de perfis e matriz de permissões.
+return [
+    'title'        => 'Perfis',
+    'new'          => 'Novo perfil',
+    'formNew'      => 'Novo perfil',
+    'formEdit'     => 'Alterar perfil',
+    'colName'      => 'Nome',
+    'colUsers'     => 'Vínculos',
+    'colType'      => 'Tipo',
+    'typeSuper'    => 'Superperfil',
+    'typeCustom'   => 'Personalizado',
+    'fieldName'    => 'Nome do perfil',
+    'superNote'    => 'Superperfil: acesso irrestrito a todos os campi. Não pode ser alterado nem excluído.',
+    'moduleAccess' => 'Acesso por módulo',
+    'specific'     => 'Permissões específicas',
+    'specificHelp' => 'Marque para permitir a ação.',
+    'accessNone'   => 'Sem acesso',
+    'accessReader' => 'Leitor',
+    'accessEditor' => 'Editor',
+    'saved'        => 'Perfil salvo.',
+    'notFound'     => 'Perfil não encontrado.',
+    'nameInUse'    => 'Já existe um perfil com este nome.',
+    'superLocked'  => 'O superperfil não pode ser alterado nem excluído.',
+    'inUse'        => 'Este perfil ainda está atribuído a {0} vínculo(s) e não pode ser excluído.',
+    'deleteTitle'  => 'Excluir perfil',
+    'deleteText'   => 'O perfil {0} será excluído.',
+    'deleted'      => 'Perfil excluído.',
+];

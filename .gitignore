@@ -1,0 +1,162 @@
+#-------------------------
+# Operating Specific Junk Files
+#-------------------------
+
+# OS X
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# OS X Thumbnails
+._*
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+# Windows shortcuts
+*.lnk
+
+# Linux
+*~
+
+# KDE directory preferences
+.directory
+
+# Linux trash folder which might appear on any partition or disk
+.Trash-*
+
+#-------------------------
+# Environment Files
+#-------------------------
+# These should never be under version control,
+# as it poses a security risk.
+.env
+.vagrant
+Vagrantfile
+
+#-------------------------
+# Temporary Files
+#-------------------------
+/writable/cache/*
+!/writable/cache/index.html
+
+/writable/logs/*
+!/writable/logs/index.html
+
+/writable/session/*
+!/writable/session/index.html
+
+/writable/uploads/*
+!/writable/uploads/index.html
+
+/writable/debugbar/*
+!/writable/debugbar/index.html
+
+# Relatório da auditoria de acessibilidade (npm run audit:a11y)
+/writable/axe/
+
+php_errors.log
+
+#-------------------------
+# User Guide Temp Files
+#-------------------------
+/user_guide_src/build/*
+/user_guide_src/cilexer/build/*
+/user_guide_src/cilexer/dist/*
+/user_guide_src/cilexer/pycilexer.egg-info/*
+
+#-------------------------
+# Test Files
+#-------------------------
+/tests/coverage*
+
+# Don't save phpunit under version control.
+/phpunit
+
+#-------------------------
+# Composer
+#-------------------------
+vendor/
+
+#-------------------------
+# IDE / Development Files
+#-------------------------
+
+# Modules Testing
+_modules/*
+
+# phpenv local config
+.php-version
+
+# Jetbrains editors (PHPStorm, etc)
+.idea/
+*.iml
+
+# NetBeans
+/nbproject/
+/build/
+/nbbuild/
+/dist/
+/nbdist/
+/nbactions.xml
+/nb-configuration.xml
+/.nb-gradle/
+
+# Sublime Text
+*.tmlanguage.cache
+*.tmPreferences.cache
+*.stTheme.cache
+*.sublime-workspace
+*.sublime-project
+.phpintel
+/api/
+
+# Visual Studio Code
+.vscode/
+
+/results/
+/phpunit.xml
+
+#-------------------------
+# Ambienta
+#-------------------------
+# Node
+node_modules/
+
+# Ferramentas de assistente de IA: existem apenas na máquina local
+.claude/
+CLAUDE.md
+design/
+
+# Pacote de setup inicial do projeto
+ambienta-project-setup.zip
+ROADMAP.md
+REQUISITOS.md
+database/
+
+# Arquivos enviados pelos usuários (logo, foto, mapa); só a proteção da pasta é versionada.
+/public/uploads/*
+!/public/uploads/.htaccess
+!/public/uploads/index.html
+
+# Cópia temporária do .env feita pelo testar-schema (restaurada ao fim de cada comando).
+.env.testar-schema.bak
+
+# Template TailAdmin (referência visual de terceiros, não é servido nem versionado).
+/design/tailadmin-free-tailwind-dashboard-template-main/
+/design/tailadmin-free-tailwind-dashboard-template-main.zip
+
+# JS de terceiros copiado por scripts/copy-assets.js (precisa ir para o servidor)
+!/public/assets/js/vendor/
+

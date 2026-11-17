@@ -1,0 +1,150 @@
+<?php
+
+/**
+ * Consulta pública (sem login): a semana (domingo a sábado) de um campus, em três visões (cada uma na sua
+ * rota). Parte fixa: seletor de semana, filtros gerais num acordeão e a escolha da visão; o resto vem da
+ * visão (consulta/visao_*). Sempre com a identidade padrão do sistema.
+ *
+ * @var string                                  $visao     gantt | turnos | resumo
+ * @var int|null                                $campus
+ * @var array<string, int|string>               $filtros
+ * @var DateTimeImmutable                       $data      dia escolhido
+ * @var DateTimeImmutable                       $domingo   primeiro dia da semana mostrada
+ * @var array<string, mixed>|null               $grade     GradeConsulta::montar(); null sem campus
+ * @var array{manha: int, tarde: int, noite: int} $fins
+ * @var string                                  $turno     filtro de turno da visão por turno
+ * @var string                                  $diaPadrao
+ * @var string                                  $acao      rota da visão atual
+ * @var array<string, string>                   $links     visão => URL (mantém campus, filtros e data)
+ * @var string                                  $semanaAnterior
+ * @var string                                  $semanaSeguinte
+ * @var string                                  $hoje
+ * @var string                                  $limpar
+ * @var Closure                                 $linkTurno
+ */
+$formato = lang('Institucional.dateFormat');
+$sabado  = $domingo->modify('+6 days');
+$visoes  = ['gantt' => 'viewGantt', 'turnos' => 'viewShifts', 'resumo' => 'viewSummary'];
+$filtrou = $filtros !== [];
+?>
+<?= $this->extend('layouts/main') ?>
+
+<?= $this->section('title') ?><?= esc(lang('Consulta.title')) ?><?= $this->endSection() ?>
+
+<?= $this->section('content') ?>
+    <h1 class="mb-space-2 text-display"><?= esc(lang('Consulta.title')) ?></h1>
+    <p class="mb-space-6 text-body text-ink-muted"><?= esc(lang('Consulta.intro')) ?></p>
+
+    <?php if ($campus === null || $grade === null) : ?>
+        <?= ui_alert('pending', lang('Consulta.noCampus')) ?>
+    <?php else : ?>
+        <form method="get" action="<?= esc($acao, 'attr') ?>" role="search">
+            <?php if ($visao === 'turnos' && $turno !== 'todos') : ?>
+                <input type="hidden" name="turno" value="<?= esc($turno, 'attr') ?>">
+            <?php endif ?>
+
+            <div class="mb-space-4 flex flex-wrap items-end gap-x-space-4 gap-y-space-2 rounded-md border border-border bg-surface p-space-4 shadow-xs">
+                <?= ui_field('data', lang('Consulta.fieldWeekOf'), 'date', $data->format('Y-m-d'), null, null, ['@change' => '$el.form.requestSubmit()', 'required' => true]) ?>
+                <div class="mb-space-4 flex flex-wrap gap-space-2">
+                    <?= ui_button(lang('Consulta.showWeek'), 'secondary', ['type' => 'submit']) ?>
+                    <?= ui_button(lang('Agendamento.previousWeek'), 'secondary', ['href' => $semanaAnterior]) ?>
+                    <?= ui_button(lang('Consulta.thisWeek'), 'secondary', ['href' => $hoje]) ?>
+                    <?= ui_button(lang('Agendamento.nextWeek'), 'secondary', ['href' => $semanaSeguinte]) ?>
+                </div>
+                <p class="mb-space-4 text-body" aria-live="polite">
+                    <span class="text-body-strong"><?= esc(lang('Consulta.weekRange')) ?>:</span>
+                    <span class="tabular-nums"><?= esc($domingo->format($formato) . ' – ' . $sabado->format($formato)) ?></span>
+                </p>
+            </div>
+
+            <?= ui_recolhivel_inicio(lang('Consulta.filtersTitle')) ?>
+                <div class="rounded-md border border-border bg-surface p-space-4 shadow-xs sm:p-space-6">
+                    <div class="grid gap-x-space-4 sm:grid-cols-2 lg:grid-cols-3">
+                        <?= ui_select_fonte('campus', lang('Consulta.fieldCampus'), 'campi-ativos', [], $campus) ?>
+                        <?= ui_select_fonte('curso', lang('Consulta.fieldCourse'), 'cursos', [], $filtros['curso'] ?? null, lang('Consulta.any')) ?>
+                        <?= ui_select_fonte('disciplina', lang('Consulta.fieldDiscipline'), 'disciplinas', [], $filtros['disciplina'] ?? null, lang('Consulta.any')) ?>
+                        <?= ui_field('professor', lang('Consulta.fieldProfessor'), 'search', (string) ($filtros['professor'] ?? ''), null, lang('Consulta.professorHelp'), ['maxlength' => '100', 'autocomplete' => 'off']) ?>
+                        <div class="sm:col-span-2">
+                            <?= ui_field('texto', lang('Consulta.fieldText'), 'search', (string) ($filtros['texto'] ?? ''), null, lang('Consulta.textHelp'), ['maxlength' => '100', 'autocomplete' => 'off']) ?>
+                        </div>
+                    </div>
+                    <div class="flex flex-wrap gap-space-3">
+                        <?= ui_button(lang('Consulta.search'), 'primary', ['type' => 'submit']) ?>
+                        <?php if ($filtrou) : ?>
+                            <?= ui_button(lang('Consulta.clear'), 'secondary', ['href' => $limpar]) ?>
+                        <?php endif ?>
+                    </div>
+                </div>
+            <?= ui_recolhivel_fim() ?>
+        </form>
+
+        <nav aria-label="<?= esc(lang('Consulta.viewsNav'), 'attr') ?>" class="mb-space-2">
+            <ul class="flex flex-wrap gap-space-2">
+                <?php foreach ($visoes as $chave => $rotulo) : ?>
+                    <li>
+                        <a href="<?= esc($links[$chave], 'attr') ?>"<?= $visao === $chave ? ' aria-current="page"' : '' ?>
+                           class="inline-flex min-h-11 items-center rounded-sm px-space-4 text-body-strong no-underline <?= $visao === $chave ? 'bg-brand text-brand-ink' : 'border border-border-strong bg-surface text-ink hover:bg-paper' ?>">
+                            <?= esc(lang('Consulta.' . $rotulo)) ?>
+                        </a>
+                    </li>
+                <?php endforeach ?>
+            </ul>
+        </nav>
+        <p class="mb-space-4 max-w-3xl text-data text-ink-muted"><?= esc(lang('Consulta.' . $visoes[$visao] . 'Hint')) ?></p>
+
+        <?php
+        $dadosVisao = compact('grade', 'fins', 'turno', 'diaPadrao', 'domingo', 'linkTurno', 'formato');
+        echo view('consulta/visao_' . $visao, $dadosVisao, ['saveData' => false]);
+
+        // Dados dos agendamentos para o JS (modal de detalhes e agenda semanal de um ambiente).
+        $store = [
+            'dias'      => array_map(static fn (string $dia): array => [
+                'chave'  => $dia,
+                'rotulo' => lang('Consulta.weekday_' . $dia),
+                'curto'  => lang('Consulta.weekdayShort_' . $dia),
+                'data'   => (new DateTimeImmutable($grade['datas'][$dia]))->format(lang('Consulta.shortDate')),
+            ], $grade['dias']),
+            'ambientes' => (object) array_map(static fn (array $a): array => [
+                'numero' => (string) $a['numero'],
+                'nome'   => (string) $a['nome'],
+                'predio' => $a['predio'] . ' · ' . $a['campus'],
+            ], array_column($grade['ambientes'], null, 'id')),
+            'tipos'     => ['aula' => '', 'pontual' => lang('Consulta.typeOneOffShort')],
+            // Ordem e rótulos dos detalhes (cada agendamento traz só os valores, em `d`).
+            'ordem'     => ['tipo', 'rec', 'data', 'hora', 'amb', 'local', 'curso', 'disc', 'prof', 'resp', 'titulo', 'sem'],
+            'rotulos'   => [
+                'tipo'   => lang('Consulta.detailType'),
+                'rec'    => lang('Consulta.detailRecurrence'),
+                'data'   => lang('Consulta.detailDate'),
+                'hora'   => lang('Consulta.detailTime'),
+                'amb'    => lang('Consulta.detailRoom'),
+                'local'  => lang('Consulta.detailPlace'),
+                'curso'  => lang('Consulta.detailCourse'),
+                'disc'   => lang('Consulta.detailDiscipline'),
+                'prof'   => lang('Consulta.detailTeacher'),
+                'resp'   => lang('Consulta.detailResponsible'),
+                'titulo' => lang('Consulta.detailTitle'),
+                'sem'    => lang('Consulta.detailSemester'),
+            ],
+            'eventos'   => (object) array_map(
+                static fn (array $e): array => array_intersect_key(
+                    $e,
+                    array_flip(['k', 'tipo', 'imin', 'fmin', 'faixa', 'faixas', 'l1', 'l2', 'pre', 'l3', 'd'])
+                ),
+                $grade['eventos']
+            ),
+            'grade'     => (object) $grade['grade'],
+        ];
+        ?>
+        <script>
+            document.addEventListener('alpine:init', () => {
+                window.Alpine.store('consulta', <?= json_encode($store, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE) ?>);
+            });
+        </script>
+
+        <?= ui_modal('consulta-evento', lang('Consulta.eventModalTitle'), view('consulta/_modal_evento', [], ['saveData' => false])) ?>
+        <?php if ($visao === 'gantt') : ?>
+            <?= ui_modal('consulta-sala', lang('Consulta.roomModalTitle'), view('consulta/_modal_sala', [], ['saveData' => false]), '', null, null, true) ?>
+        <?php endif ?>
+    <?php endif ?>
+<?= $this->endSection() ?>

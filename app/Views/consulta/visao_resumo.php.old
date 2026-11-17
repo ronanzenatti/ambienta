@@ -1,0 +1,106 @@
+<?php
+
+/**
+ * Visão 3, resumo por sala (mestre-detalhe): uma linha compacta por ambiente, com a ocupação de cada dia em três
+ * barras (manhã, tarde, noite, pelos limites do campus). Clicar na sala expande a semana completa dela (a mesma
+ * agenda de colunas do modal da linha do tempo). Ideal para achar horários vagos entre muitas salas.
+ *
+ * @var array<string, mixed>                      $grade
+ * @var array{manha: int, tarde: int, noite: int} $fins
+ * @var string                                    $formato
+ */
+
+use App\Libraries\Agendamento\GradeConsulta;
+
+$blocos = GradeConsulta::porPredio($grade['ambientes']);
+$ids    = array_map(static fn (array $a): int => (int) $a['id'], $grade['ambientes']);
+?>
+<div x-data="ambientaResumo(<?= esc(json_encode($ids), 'attr') ?>)">
+    <div class="mb-space-4 rounded-md border border-border bg-surface p-space-4 shadow-xs">
+        <p class="mb-space-2 text-body-strong"><?= esc(lang('Consulta.optionsSummary')) ?></p>
+        <div class="flex flex-wrap gap-space-2">
+            <?= ui_button(lang('Consulta.expandAll'), 'secondary', ['type' => 'button', '@click' => 'todos(true)']) ?>
+            <?= ui_button(lang('Consulta.collapseAll'), 'secondary', ['type' => 'button', '@click' => 'todos(false)']) ?>
+        </div>
+    </div>
+
+    <ul class="mb-space-4 flex flex-wrap gap-x-space-6 gap-y-space-2 text-data" aria-label="<?= esc(lang('Consulta.legend'), 'attr') ?>">
+        <li class="inline-flex items-center gap-space-2">
+            <span class="inline-block h-4 w-8 rounded-sm bg-brand" aria-hidden="true"></span><?= esc(lang('Consulta.busy')) ?>
+        </li>
+        <li class="inline-flex items-center gap-space-2">
+            <span class="inline-block h-4 w-8 rounded-sm border border-border-strong bg-surface" aria-hidden="true"></span><?= esc(lang('Consulta.free')) ?>
+        </li>
+        <?php foreach (GradeConsulta::TURNOS as $t) : ?>
+            <li><span class="font-semibold"><?= esc(lang('Consulta.shiftShort_' . $t)) ?></span> = <?= esc(lang('Consulta.shift_' . $t)) ?> (<?= esc(consulta_hora(GradeConsulta::faixaDoTurno($t, $fins)[0]) . '–' . consulta_hora(GradeConsulta::faixaDoTurno($t, $fins)[1])) ?>)</li>
+        <?php endforeach ?>
+    </ul>
+
+    <?php foreach ($blocos as $bloco) : ?>
+        <?= ui_recolhivel_inicio(lang('Consulta.blockTitle', [$bloco['nome'], count($bloco['ambientes'])]), true) ?>
+    <div class="mb-space-6 overflow-x-auto rounded-md border border-border bg-surface shadow-xs">
+        <table class="w-full min-w-[56rem] border-collapse text-left">
+            <caption class="sr-only"><?= esc(lang('Consulta.tableCaptionSummary')) ?></caption>
+            <thead>
+                <tr class="border-b border-border">
+                    <th scope="col" class="sticky left-0 z-10 w-56 border-r border-border bg-surface px-space-2 py-space-2 text-body-strong"><?= esc(lang('Consulta.roomColumn')) ?></th>
+                    <?php foreach ($grade['dias'] as $dia) : ?>
+                        <th scope="col" class="min-w-32 px-space-2 py-space-2 text-body-strong">
+                            <?= esc(lang('Consulta.weekdayShort_' . $dia)) ?>
+                            <span class="block text-data font-normal tabular-nums text-ink-muted"><?= esc((new DateTimeImmutable($grade['datas'][$dia]))->format(lang('Consulta.shortDate'))) ?></span>
+                        </th>
+                    <?php endforeach ?>
+                </tr>
+            </thead>
+            <?php foreach ($bloco['ambientes'] as $amb) : ?>
+                <?php $id = (int) $amb['id']; ?>
+                <tbody class="border-b border-border last:border-b-0">
+                    <tr>
+                        <th scope="row" class="sticky left-0 z-10 border-r border-border bg-surface px-space-2 py-space-2 text-left font-normal">
+                            <button type="button" class="flex min-h-11 w-full items-start gap-space-2 text-left"
+                                    @click="alternar(<?= $id ?>)" :aria-expanded="abertos[<?= $id ?>] === true" aria-controls="resumo-sala-<?= $id ?>">
+                                <span class="mt-space-1 shrink-0 transition-transform" :class="abertos[<?= $id ?>] ? 'rotate-180' : ''"><?= ui_icon('seta-baixo', 'size-5') ?></span>
+                                <span>
+                                    <span class="block text-body-strong"><?= esc($amb['numero']) ?></span>
+                                    <span class="block text-data"><?= esc($amb['nome']) ?></span>
+                                    <span class="block text-caption underline" x-show="!abertos[<?= $id ?>]"><?= esc(lang('Consulta.expandRoom')) ?></span>
+                                    <span class="block text-caption underline" x-show="abertos[<?= $id ?>]" x-cloak><?= esc(lang('Consulta.collapseRoom')) ?></span>
+                                </span>
+                            </button>
+                        </th>
+                        <?php foreach ($grade['dias'] as $dia) : ?>
+                            <?php
+                            $eventos = array_map(static fn (string $c): array => $grade['eventos'][$c], $grade['grade'][$id][$dia] ?? []);
+                            ?>
+                            <td class="px-space-2 py-space-2 align-middle">
+                                <div class="flex gap-space-1" role="group" aria-label="<?= esc(lang('Consulta.weekday_' . $dia), 'attr') ?>">
+                                    <?php foreach (GradeConsulta::TURNOS as $t) : ?>
+                                        <?php
+                                        [$de, $ate] = GradeConsulta::faixaDoTurno($t, $fins);
+                                        $ocupado    = array_filter($eventos, static fn (array $e): bool => GradeConsulta::toca($e, $de, $ate)) !== [];
+                                        ?>
+                                        <span class="flex-1 rounded-sm px-space-1 py-space-1 text-center text-caption font-semibold <?= $ocupado ? 'bg-brand text-brand-ink' : 'border border-border-strong text-ink-muted' ?>"
+                                              title="<?= esc(lang('Consulta.shift_' . $t) . ': ' . ($ocupado ? lang('Consulta.busy') : lang('Consulta.free')), 'attr') ?>">
+                                            <?= esc(lang('Consulta.shiftShort_' . $t)) ?><span class="sr-only">, <?= esc(lang('Consulta.shift_' . $t) . ': ' . ($ocupado ? lang('Consulta.busy') : lang('Consulta.free'))) ?></span>
+                                        </span>
+                                    <?php endforeach ?>
+                                </div>
+                            </td>
+                        <?php endforeach ?>
+                    </tr>
+                    <tr id="resumo-sala-<?= $id ?>" x-show="abertos[<?= $id ?>]" x-cloak>
+                        <td colspan="<?= count($grade['dias']) + 1 ?>" class="border-t border-border bg-paper p-space-4">
+                            <template x-if="abertos[<?= $id ?>]">
+                                <div x-data="ambientaSala(<?= $id ?>)">
+                                    <?= view('consulta/_sala_semana', [], ['saveData' => false]) ?>
+                                </div>
+                            </template>
+                        </td>
+                    </tr>
+                </tbody>
+            <?php endforeach ?>
+        </table>
+    </div>
+        <?= ui_recolhivel_fim() ?>
+    <?php endforeach ?>
+</div>

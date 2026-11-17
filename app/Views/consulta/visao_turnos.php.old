@@ -1,0 +1,88 @@
+<?php
+
+/**
+ * Visão 2, semana completa por turno: ambiente nas linhas, dias nas colunas, e em cada célula os agendamentos do
+ * dia em ordem de horário. O filtro de turno (Manhã/Tarde/Noite, com os limites do campus) recorta o que cada
+ * célula mostra; é feito no servidor (link), então funciona sem JS.
+ *
+ * @var array<string, mixed>                      $grade
+ * @var array{manha: int, tarde: int, noite: int} $fins
+ * @var string                                    $turno
+ * @var Closure                                   $linkTurno turno => URL
+ * @var string                                    $formato
+ */
+
+use App\Libraries\Agendamento\GradeConsulta;
+
+[$de, $ate] = GradeConsulta::faixaDoTurno($turno, $fins);
+$blocos     = GradeConsulta::porPredio($grade['ambientes']);
+?>
+<div class="mb-space-4 rounded-md border border-border bg-surface p-space-4 shadow-xs">
+    <p class="mb-space-2 text-body-strong"><?= esc(lang('Consulta.shiftPicker')) ?></p>
+    <ul class="flex flex-wrap gap-space-2">
+        <?php foreach (['todos', ...GradeConsulta::TURNOS] as $t) : ?>
+            <?php
+            [$ini, $fim] = GradeConsulta::faixaDoTurno($t, $fins);
+            $rotulo      = $t === 'todos'
+                ? lang('Consulta.shiftAll', [consulta_hora($ini), consulta_hora($fim)])
+                : lang('Consulta.shiftRange', [lang('Consulta.shift_' . $t), consulta_hora($ini), consulta_hora($fim)]);
+            ?>
+            <li>
+                <a href="<?= esc($linkTurno($t), 'attr') ?>"<?= $turno === $t ? ' aria-current="true"' : '' ?>
+                   class="inline-flex min-h-11 items-center rounded-sm px-space-4 text-data no-underline <?= $turno === $t ? 'bg-brand text-brand-ink' : 'border border-border-strong bg-surface text-ink hover:bg-paper' ?>"><?= esc($rotulo) ?></a>
+            </li>
+        <?php endforeach ?>
+    </ul>
+</div>
+
+<?= view('consulta/_legenda', [], ['saveData' => false]) ?>
+
+<?php foreach ($blocos as $bloco) : ?>
+    <?= ui_recolhivel_inicio(lang('Consulta.blockTitle', [$bloco['nome'], count($bloco['ambientes'])]), true) ?>
+    <div class="mb-space-6 overflow-x-auto rounded-md border border-border bg-surface shadow-xs">
+        <table class="w-full min-w-[56rem] border-collapse text-left">
+            <caption class="sr-only"><?= esc(lang('Consulta.tableCaptionShifts')) ?></caption>
+            <thead>
+                <tr class="border-b border-border">
+                    <th scope="col" class="sticky left-0 z-10 w-44 border-r border-border bg-surface px-space-2 py-space-2 text-body-strong"><?= esc(lang('Consulta.roomColumn')) ?></th>
+                    <?php foreach ($grade['dias'] as $dia) : ?>
+                        <th scope="col" class="min-w-44 px-space-2 py-space-2 text-body-strong">
+                            <?= esc(lang('Consulta.weekday_' . $dia)) ?>
+                            <span class="block text-data font-normal tabular-nums text-ink-muted"><?= esc((new DateTimeImmutable($grade['datas'][$dia]))->format($formato)) ?></span>
+                        </th>
+                    <?php endforeach ?>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($bloco['ambientes'] as $amb) : ?>
+                    <tr class="border-b border-border last:border-b-0">
+                        <th scope="row" class="sticky left-0 z-10 border-r border-border bg-surface px-space-2 py-space-2 align-top font-normal">
+                            <span class="block text-body-strong"><?= esc($amb['numero']) ?></span>
+                            <span class="block text-data"><?= esc($amb['nome']) ?></span>
+                        </th>
+                        <?php foreach ($grade['dias'] as $dia) : ?>
+                            <?php
+                            $eventos = array_values(array_filter(
+                                array_map(static fn (string $c): array => $grade['eventos'][$c], $grade['grade'][$amb['id']][$dia] ?? []),
+                                static fn (array $e): bool => GradeConsulta::toca($e, $de, $ate)
+                            ));
+                            ?>
+                            <td class="align-top px-space-2 py-space-2">
+                                <?php if ($eventos === []) : ?>
+                                    <span class="text-data text-ink-muted"><span aria-hidden="true">—</span><span class="sr-only"><?= esc(lang('Consulta.free')) ?></span></span>
+                                <?php else : ?>
+                                    <ul class="flex flex-col gap-space-1">
+                                        <?php foreach ($eventos as $e) : ?>
+                                            <li><?= consulta_bloco($e, 'w-full') ?></li>
+                                        <?php endforeach ?>
+                                    </ul>
+                                <?php endif ?>
+                            </td>
+                        <?php endforeach ?>
+                    </tr>
+                <?php endforeach ?>
+            </tbody>
+        </table>
+    </div>
+    <?= ui_recolhivel_fim() ?>
+<?php endforeach ?>

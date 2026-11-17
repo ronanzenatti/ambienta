@@ -1,0 +1,30 @@
+<?php
+
+// Registro de edificios.
+return [
+    'new'          => 'Nuevo edificio',
+    'edit'         => 'Modificar edificio',
+    'photoAlt'     => 'Foto del edificio {0}',
+    'fieldMap'   => 'Mapa',
+    'mapHelp'    => 'Imagen (PNG, JPEG o WebP, hasta 2 MB) o PDF (hasta 5 MB).',
+    'viewMapPdf' => 'Abrir el mapa (PDF)',
+    'mapAlt'     => 'Mapa del edificio {0}',
+    'environments' => 'Ambientes',
+    'noEnvironments' => 'Ningún ambiente registrado en este edificio.',
+    'saved'        => 'Edificio guardado.',
+    'deleted'      => 'Edificio eliminado.',
+    'title'        => 'Edificios',
+    'empty'        => 'Ningún edificio disponible.',
+    'colCampus'    => 'Campus',
+    'filters'      => 'Filtros',
+    'fieldCampus'  => 'Campus',
+    'allCampuses'  => 'Todos los campus',
+    'filter'       => 'Filtrar',
+    'chooseTitle'  => 'Nuevo edificio: elija el campus',
+    'chooseHelp'   => 'El edificio se registra dentro de un campus. Elija en cuál.',
+    'chooseCampusError' => 'Elija el campus del nuevo edificio.',
+    'continue'     => 'Continuar',
+    'notFound'     => 'Edificio no encontrado.',
+    'deleteTitle'  => 'Eliminar edificio',
+    'deleteText'   => 'El edificio {0} será eliminado. Solo es posible eliminar un edificio sin ambientes ni vínculos de usuario.',
+];

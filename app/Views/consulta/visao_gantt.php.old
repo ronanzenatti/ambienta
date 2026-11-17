@@ -1,0 +1,133 @@
+<?php
+
+/**
+ * Visão 1, linha do tempo (padrão): uma linha por ambiente, uma aba por dia da semana, horas de 07h a 23h na
+ * horizontal. Cada agendamento é posicionado pela proporção de minutos sobre a régua (em %, ver .consulta-pos em
+ * resources/css/app.css): a régua é uma faixa [--r0, --r0 + --rs] em minutos, que o filtro de turno encolhe
+ * (zoom) sem recarregar a página. A coluna do ambiente é única; cada linha guarda uma trilha por dia e só a do
+ * dia escolhido aparece. Sem JS, aparece só o dia do início (os botões de dia dependem de JS).
+ *
+ * @var array<string, mixed>                      $grade
+ * @var array{manha: int, tarde: int, noite: int} $fins
+ * @var string                                    $diaPadrao
+ * @var DateTimeImmutable                         $domingo
+ * @var string                                    $formato
+ */
+
+use App\Libraries\Agendamento\GradeConsulta;
+
+$linha = 4.5; // altura (rem) de uma faixa de agendamento (.consulta-pos); cabe as 3 linhas de texto do bloco
+
+$faixas = [];
+
+foreach (['todos', ...GradeConsulta::TURNOS] as $t) {
+    $faixas[$t] = GradeConsulta::faixaDoTurno($t, $fins);
+}
+
+$rotuloTurno = static fn (string $t): string => $t === 'todos'
+    ? lang('Consulta.shiftAll', [consulta_hora($faixas[$t][0]), consulta_hora($faixas[$t][1])])
+    : lang('Consulta.shiftRange', [lang('Consulta.shift_' . $t), consulta_hora($faixas[$t][0]), consulta_hora($faixas[$t][1])]);
+
+$blocos  = GradeConsulta::porPredio($grade['ambientes']);
+$horas   = range(GradeConsulta::INICIO / 60, GradeConsulta::FIM / 60 - 1);
+$posicao = static fn (int $minuto): string => 'calc((' . $minuto . ' - var(--r0)) / var(--rs) * 100%)';
+$curta   = lang('Consulta.shortDate');
+// Só o dia de início aparece no HTML; o Alpine mostra e esconde os demais.
+$oculto = static fn (string $dia): bool => $dia !== $diaPadrao;
+?>
+<div x-data="ambientaConsulta(<?= esc(json_encode(['dia' => $diaPadrao, 'faixas' => $faixas]), 'attr') ?>)"
+     :style="estilo" style="--r0: <?= GradeConsulta::INICIO ?>; --rs: <?= GradeConsulta::FIM - GradeConsulta::INICIO ?>">
+    <div class="mb-space-4 rounded-md border border-border bg-surface p-space-4 shadow-xs">
+        <p class="mb-space-2 text-body-strong"><?= esc(lang('Consulta.optionsGantt')) ?></p>
+        <div class="flex flex-wrap gap-space-2" role="group" aria-label="<?= esc(lang('Consulta.dayPicker'), 'attr') ?>">
+            <?php foreach ($grade['dias'] as $dia) : ?>
+                <?php $quando = (new DateTimeImmutable($grade['datas'][$dia]))->format($curta); ?>
+                <button type="button" @click="dia = '<?= $dia ?>'" :aria-pressed="dia === '<?= $dia ?>'"
+                        aria-label="<?= esc(lang('Consulta.dayCount', [lang('Consulta.weekday_' . $dia) . ' ' . $quando, $grade['totais'][$dia]]), 'attr') ?>"
+                        :class="dia === '<?= $dia ?>' ? 'bg-brand text-brand-ink' : 'border border-border-strong bg-surface text-ink hover:bg-paper'"
+                        class="inline-flex min-h-11 flex-col items-center justify-center rounded-sm px-space-4 text-data">
+                    <span class="text-body-strong"><?= esc(lang('Consulta.weekdayShort_' . $dia)) ?> <span class="tabular-nums"><?= esc($quando) ?></span></span>
+                    <span class="tabular-nums"><?= esc(lang('Consulta.dayTotal', [$grade['totais'][$dia]])) ?></span>
+                </button>
+            <?php endforeach ?>
+        </div>
+        <p class="mb-space-2 mt-space-4 text-body-strong"><?= esc(lang('Consulta.shiftPicker')) ?></p>
+        <div class="flex flex-wrap gap-space-2" role="group" aria-label="<?= esc(lang('Consulta.shiftPicker'), 'attr') ?>">
+            <?php foreach (array_keys($faixas) as $t) : ?>
+                <button type="button" @click="turno = '<?= $t ?>'" :aria-pressed="turno === '<?= $t ?>'"
+                        :class="turno === '<?= $t ?>' ? 'bg-brand text-brand-ink' : 'border border-border-strong bg-surface text-ink hover:bg-paper'"
+                        class="inline-flex min-h-11 items-center rounded-sm px-space-4 text-data"><?= esc($rotuloTurno($t)) ?></button>
+            <?php endforeach ?>
+        </div>
+    </div>
+
+    <?= view('consulta/_legenda', [], ['saveData' => false]) ?>
+
+    <?php foreach ($grade['dias'] as $dia) : ?>
+        <div x-show="dia === '<?= $dia ?>'"<?= $oculto($dia) ? ' style="display: none"' : '' ?> aria-live="polite">
+            <h2 class="mb-space-2 text-heading">
+                <?= esc(lang('Consulta.weekday_' . $dia)) ?>
+                <span class="tabular-nums text-ink-muted"><?= esc((new DateTimeImmutable($grade['datas'][$dia]))->format($formato)) ?></span>
+            </h2>
+            <?php if ($grade['totais'][$dia] === 0) : ?>
+                <p class="mb-space-2 text-data text-ink-muted"><?= esc(lang('Consulta.dayEmpty')) ?></p>
+            <?php endif ?>
+        </div>
+    <?php endforeach ?>
+
+    <?php foreach ($blocos as $bloco) : ?>
+        <?= ui_recolhivel_inicio(lang('Consulta.blockTitle', [$bloco['nome'], count($bloco['ambientes'])]), true) ?>
+    <div class="mb-space-6 overflow-x-auto rounded-md border border-border bg-surface shadow-xs">
+        <div class="min-w-[calc(13rem_+_var(--rs)_*_2px)]">
+            <div class="flex border-b border-border">
+                <div class="sticky left-0 z-20 flex h-8 w-52 shrink-0 items-center border-r border-border bg-surface px-space-2 text-body-strong"><?= esc(lang('Consulta.roomColumn')) ?></div>
+                <div class="relative h-8 flex-1 overflow-hidden" aria-hidden="true">
+                    <?php foreach ($horas as $h) : ?>
+                        <span class="absolute inset-y-0 border-l border-border pl-space-1 text-caption tabular-nums text-ink-muted" style="left: <?= $posicao($h * 60) ?>"><?= $h ?>h</span>
+                    <?php endforeach ?>
+                </div>
+            </div>
+
+            <ul class="relative">
+                <li class="pointer-events-none absolute inset-y-0 left-52 right-0 overflow-hidden" aria-hidden="true">
+                    <?php foreach ($horas as $h) : ?>
+                        <span class="absolute inset-y-0 border-l border-border" style="left: <?= $posicao($h * 60) ?>"></span>
+                    <?php endforeach ?>
+                </li>
+                <?php foreach ($bloco['ambientes'] as $amb) : ?>
+                    <li class="relative flex border-b border-border last:border-b-0">
+                        <div class="sticky left-0 z-10 w-52 shrink-0 border-r border-border bg-surface px-space-2 py-space-2">
+                            <p class="text-body-strong"><?= esc($amb['numero']) ?></p>
+                            <p class="text-data"><?= esc($amb['nome']) ?></p>
+                            <a class="inline-flex min-h-11 items-center text-data underline" href="<?= site_url('agenda/ambiente/' . (int) $amb['id']) ?>"
+                               @click.prevent="$dispatch('open-modal', { id: 'consulta-sala', ambienteId: <?= (int) $amb['id'] ?> })"><?= esc(lang('Consulta.agendaLink')) ?><span class="sr-only">: <?= esc($amb['numero'] . ' — ' . $amb['nome']) ?></span></a>
+                        </div>
+                        <?php foreach ($grade['dias'] as $dia) : ?>
+                            <?php
+                            $chaves      = $grade['grade'][$amb['id']][$dia] ?? [];
+                            $faixasDoDia = 1;
+
+                            foreach ($chaves as $c) {
+                                $faixasDoDia = max($faixasDoDia, $grade['eventos'][$c]['faixas']);
+                            }
+                            ?>
+                            <div x-show="dia === '<?= $dia ?>'" class="relative flex-1 overflow-hidden"
+                                 style="min-height: <?= $faixasDoDia * $linha ?>rem<?= $oculto($dia) ? '; display: none' : '' ?>">
+                                <?php foreach ($chaves as $c) : ?>
+                                    <?php $e = $grade['eventos'][$c]; ?>
+                                    <?= consulta_bloco(
+                                        $e,
+                                        'consulta-pos',
+                                        '--i: ' . $e['imin'] . '; --d: ' . ($e['fmin'] - $e['imin']) . '; --f: ' . $e['faixa']
+                                    ) ?>
+                                <?php endforeach ?>
+                            </div>
+                        <?php endforeach ?>
+                    </li>
+                <?php endforeach ?>
+            </ul>
+        </div>
+    </div>
+        <?= ui_recolhivel_fim() ?>
+    <?php endforeach ?>
+</div>

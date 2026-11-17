@@ -1,0 +1,30 @@
+<?php
+
+// Profiles screen and permission matrix.
+return [
+    'title'        => 'Profiles',
+    'new'          => 'New profile',
+    'formNew'      => 'New profile',
+    'formEdit'     => 'Edit profile',
+    'colName'      => 'Name',
+    'colUsers'     => 'Assignments',
+    'colType'      => 'Type',
+    'typeSuper'    => 'Super profile',
+    'typeCustom'   => 'Custom',
+    'fieldName'    => 'Profile name',
+    'superNote'    => 'Super profile: unrestricted access to all campuses. It cannot be changed or deleted.',
+    'moduleAccess' => 'Access by module',
+    'specific'     => 'Specific permissions',
+    'specificHelp' => 'Check to allow the action.',
+    'accessNone'   => 'No access',
+    'accessReader' => 'Reader',
+    'accessEditor' => 'Editor',
+    'saved'        => 'Profile saved.',
+    'notFound'     => 'Profile not found.',
+    'nameInUse'    => 'A profile with this name already exists.',
+    'superLocked'  => 'The super profile cannot be changed or deleted.',
+    'inUse'        => 'This profile is still assigned in {0} assignment(s) and cannot be deleted.',
+    'deleteTitle'  => 'Delete profile',
+    'deleteText'   => 'The profile {0} will be deleted.',
+    'deleted'      => 'Profile deleted.',
+];
